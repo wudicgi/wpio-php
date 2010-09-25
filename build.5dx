@@ -1,0 +1,48 @@
+<?php
+$files = array('WPIO.php', 'WPIO/FileStream.php');
+
+if (!file_exists('./build/WPIO')) {
+    mkdir('./build/WPIO');
+}
+
+foreach ($files as $file) {
+
+$lines = file('./source/' . $file);
+$lines_2 = array();
+
+$last_line_is_removed = false;
+foreach ($lines as $line) {
+    /*
+    if (!$version_writable) {
+        $line = str_replace('WPDP', 'WPDP_Readonly', $line);
+    }
+    */
+    $temp = trim($line);
+    if (substr($temp, 0, 17) == 'trace(__METHOD__,' ||
+        substr($temp, 0, 6) == 'debug(' ||
+        substr($temp, 0, 7) == 'assert(') {
+        $last_line_is_removed = true;
+        continue;
+    }
+    if (substr($temp, 0, 2) == '//' &&
+        strpos($temp, '{{{') === false &&
+        strpos($temp, '}}}') === false) {
+        $last_line_is_removed = true;
+        continue;
+    }
+    if ($last_line_is_removed) {
+        $last_line_is_removed = false;
+        if (empty($temp)) {
+            continue;
+        }
+    }
+    $lines_2[] = $line;
+}
+
+file_put_contents('./build/' . $file, implode('', $lines_2));
+
+}
+
+echo 'OK';
+
+?>
