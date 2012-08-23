@@ -52,7 +52,21 @@ class WPIO {
     const SEEK_CUR = 1;
     const SEEK_END = 2;
 
+    const _LIBRARY_VERSION = '0.1.0-dev';
+
     // }}}
+
+    public static function libraryVersion() {
+        return self::_LIBRARY_VERSION;
+    }
+
+    public static function libraryCompatibleWith($version) {
+        if (version_compare($version, self::libraryVersion()) <= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 /**
@@ -117,6 +131,21 @@ abstract class WPIO_Stream {
      * @throws WPIO_Exception
      */
     abstract public function close();
+
+    // }}}
+
+    // {{{ flush()
+
+    /**
+     * 将缓冲内容输出到流
+     *
+     * @access public
+     *
+     * @return bool 成功时返回 true, 失败时抛出异常
+     *
+     * @throws WPIO_Exception
+     */
+    abstract public function flush();
 
     // }}}
 

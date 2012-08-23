@@ -76,6 +76,17 @@ class WPIO_FileStream extends WPIO_Stream {
         return true;
     }
 
+    public function flush() {
+        $success = fflush($this->_fp);
+
+        // bool fflush() 在失败时返回 false
+        if ($success == false) {
+            throw new WPIO_Exception("Failed to flush file using fflush()");
+        }
+
+        return true;
+    }
+
     public function seek($offset, $whence = WPIO::SEEK_SET) {
         static $table = array(
             WPIO::SEEK_SET => SEEK_SET,
